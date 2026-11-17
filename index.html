@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santiago Benjamín Irigoyen — CV & QR Hub</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #1e293b;
+            --primary-hover: #0f172a;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2.5rem 1.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.35rem;
+        }
+
+        /* 4-Column Responsive Grid */
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .qr-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .qr-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            background-color: #e2e8f0;
+            color: #334155;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge.en {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge.es {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .qr-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .qr-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .qr-box {
+            width: 190px;
+            height: 190px;
+            padding: 0.75rem;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .pdf-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            word-break: break-word;
+            margin-bottom: 1.25rem;
+            padding: 0 0.25rem;
+        }
+
+        .pdf-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.45rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* Hidden iframe used for silent PDF printing */
+        #print-frame {
+            display: none;
+        }
+
+        /* =========================================
+       PRINT STYLES (Isolates Selected QR Card)
+       ========================================= */
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+
+            header,
+            .btn-group,
+            .badge,
+            .qr-card:not(.printing-target) {
+                display: none !important;
+            }
+
+            .qr-grid {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 95vh;
+            }
+
+            .qr-card.printing-target {
+                border: 2px solid #0f172a;
+                box-shadow: none;
+                padding: 2.5rem;
+                max-width: 420px;
+                width: 100%;
+            }
+
+            .qr-card.printing-target .qr-box {
+                width: 260px;
+                height: 260px;
+                border: none;
+            }
+
+            .qr-card.printing-target .pdf-link {
+                color: #0f172a;
+                font-size: 0.9rem;
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Santiago Benjamín Irigoyen</h1>
+            <p>Scan a QR code, open the direct link, or print a QR / CV version below</p>
+        </header>
+
+        <main class="qr-grid" id="qr-grid"></main>
+    </div>
+
+    <!-- Hidden iframe to trigger direct PDF printing -->
+    <iframe id="print-frame"></iframe>
+
+    <script>
+        // Mapped directly to your img/ and pdfs/ folder contents
+        const cvVersions = [
+            {
+                lang: "English",
+                langClass: "en",
+                title: "CV Exterior (English)",
+                subtitle: "Hyperlinked with Photo",
+                qrPath: "img/Santiago_Irigoyen_CV_EXTERIOR_QR English.png",
+                pdfPath: "pdfs/Santiago_Benjamín_Irigoyen_CV_(Hyperlinked with Photo).pdf",
+                pdfLabel: "Santiago_Benjamín_Irigoyen_CV_(Hyperlinked with Photo).pdf"
+            },
+            {
+                lang: "English",
+                langClass: "en",
+                title: "CV Interior (English)",
+                subtitle: "Hyperlinked without Photo",
+                qrPath: "img/Santiago_Irigoyen_CV_INTERIOR_QR English.png",
+                pdfPath: "pdfs/Santiago_Benjamín_Irigoyen_CV (Hyperlinked).pdf",
+                pdfLabel: "Santiago_Benjamín_Irigoyen_CV (Hyperlinked).pdf"
+            },
+            {
+                lang: "Español",
+                langClass: "es",
+                title: "CV Exterior (Español)",
+                subtitle: "Con Foto",
+                qrPath: "img/Santiago_Irigoyen_CV_EXTERIOR_QR Español.png",
+                pdfPath: "pdfs/SANTIAGO BENJAMÍN IRIGOYEN (Con Foto - ESPAÑOL).pdf",
+                pdfLabel: "SANTIAGO BENJAMÍN IRIGOYEN (Con Foto - ESPAÑOL).pdf"
+            },
+            {
+                lang: "Español",
+                langClass: "es",
+                title: "CV Interior (Español)",
+                subtitle: "Sin Foto",
+                qrPath: "img/Santiago_Irigoyen_CV_INTERIOR_QR Español.png",
+                pdfPath: "pdfs/SANTIAGO BENJAMÍN IRIGOYEN (Sin Foto - ESPAÑOL).pdf",
+                pdfLabel: "SANTIAGO BENJAMÍN IRIGOYEN (Sin Foto - ESPAÑOL).pdf"
+            }
+        ];
+
+        const grid = document.getElementById("qr-grid");
+
+        cvVersions.forEach((item, index) => {
+            const encodedQR = encodeURI(item.qrPath);
+            const encodedPDF = encodeURI(item.pdfPath);
+
+            const card = document.createElement("div");
+            card.className = "qr-card";
+            card.id = `card-${index}`;
+
+            card.innerHTML = `
+        <span class="badge ${item.langClass}">${item.lang}</span>
+        <h2>${item.title}</h2>
+        <p class="qr-subtitle">${item.subtitle}</p>
+        
+        <div class="qr-box">
+          <img src="${encodedQR}" alt="${item.title} QR Code">
+        </div>
+
+        <a href="${encodedPDF}" target="_blank" rel="noopener noreferrer" class="pdf-link">
+          📄 ${item.pdfLabel}
+        </a>
+
+        <div class="btn-group">
+          <button class="btn btn-outline" onclick="printQR('card-${index}')">
+            🖨️ Print QR
+          </button>
+          <button class="btn btn-primary" onclick="printPDF('${encodedPDF}')">
+            📄 Print CV
+          </button>
+        </div>
+      `;
+
+            grid.appendChild(card);
+        });
+
+        // Isolates and prints only the selected QR card
+        function printQR(cardId) {
+            const targetCard = document.getElementById(cardId);
+            targetCard.classList.add("printing-target");
+
+            window.print();
+
+            setTimeout(() => {
+                targetCard.classList.remove("printing-target");
+            }, 500);
+        }
+
+        // Loads the PDF into a hidden iframe and triggers the browser print dialog
+        // Falls back to opening the PDF in a new tab if blocked by local file:// security
+        function printPDF(encodedPdfPath) {
+            const frame = document.getElementById("print-frame");
+            frame.src = encodedPdfPath;
+
+            frame.onload = () => {
+                try {
+                    frame.contentWindow.focus();
+                    frame.contentWindow.print();
+                } catch (e) {
+                    window.open(encodedPdfPath, "_blank");
+                }
+            };
+        }
+    </script>
+</body>
+
+</html>
